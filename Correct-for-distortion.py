@@ -29,7 +29,7 @@ for idx, imgname in enumerate(imglist):
         imgpoints.append(corners)
         objpoints.append(objp)
 
-        img = cv2.drawChessboardCorners(img, (9,6), corners, ret) # draw imgpoints on image
+        # img = cv2.drawChessboardCorners(img, (9,6), corners, ret) # draw imgpoints on image
         img_size = (img.shape[1], img.shape[0])
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img_size,None,None)
         undist = cv2.undistort(img,mtx,dist,None,mtx)
