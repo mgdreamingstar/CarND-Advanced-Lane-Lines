@@ -23,6 +23,7 @@ The goals / steps of this project are the following:
 [image4]: ./output_images/writeup_combined_hls_image.jpg "Binary Example 2"
 [image5]: ./output_images/writeup_perspective_transformation.jpg "Perspective Transformation"
 [image6]: ./output_images/writeup_fit_lane_lines.jpg "Fit lane lines"
+[image7]: ./output_images/project_back.jpg "Project Back"
 [video1]: ./project_video.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
@@ -104,13 +105,13 @@ This step is coming from the course using sliding box to detect pixels belong to
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+I did this in 11th and 12th code cell of the IPython notebook.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this step in in 15th code cell of the IPython notebook.  Here is an example of my result on a test image:
 
-![alt text][image6]
+![alt text][image7]
 
 ---
 
