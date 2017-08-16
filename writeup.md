@@ -109,7 +109,7 @@ I did this in 11th and 12th code cell of the IPython notebook.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in in 15th code cell of the IPython notebook.  Here is an example of my result on a test image:
+I implemented this step in in 15th code cell of the IPython notebook in the function `project_back()`.  Here is an example of my result on a test image:
 
 ![alt text][image7]
 
