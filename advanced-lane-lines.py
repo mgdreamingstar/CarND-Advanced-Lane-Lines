@@ -302,3 +302,21 @@ def project_back(origin_image, lane_warped=pers_warped, Minv=Minv_w, left=left_f
 
 
 def process_image(image):
+
+'''
+    undis_image = undistortion5and6(image)
+    color_binary, combined_binary = hls_binary(hls_image)
+    arped, src, dst, M, Minv = warp(img)
+    out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(image, margin=30)
+    left_curverad, right_curverad = curvature(lefty = lefty, leftx = leftx, righty = righty, rightx = rightx)
+    result = project_back(origin_image,lane_warped = pers_warped, Minv = Minv_w, left = left_fitx, right = right_fitx, y = ploty)
+
+    image flow:
+
+    pipeline_camera_cal = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
+    pipeline_thresh_combine = cv2.imread(r'test_images\test1.jpg')
+
+    image = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0] # pipeline_camera_cal
+    camera_cal_dir = os.path.abspath(r'.\output_images\distortion-corrected.jpg')
+
+'''
