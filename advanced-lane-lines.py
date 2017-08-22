@@ -15,7 +15,6 @@ pipeline_thresh_combine = cv2.imread(r'test_images\test1.jpg')
 
 # Helper Functions
 
-
 def abs_sobel_thresh(img, orient='x', sobel_kernel=3, thresh=(0, 255)):
     gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     if orient == 'x':
@@ -107,7 +106,7 @@ def undistortion6(img_path):
         img_size = (origin.shape[1], origin.shape[0])
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints_un, imgpoints_un, img_size, None, None)
         out_img = cv2.undistort(origin, mtx, dist, None, mtx)
-        return out_img
+        return out_img, mtx, dist
 
 
 def undistortion5and6(image):
@@ -124,7 +123,7 @@ def hls_binary(hls_image):
     s_channel = hls[:, :, 2]
 
     # Grayscale image
-    # NOTE: we already saw that standard grayscaling lost color information for the lane lines
+    # we already saw that standard grayscaling lost color information for the lane lines
     # Explore gradients in other colors spaces / color channels to see what might work better
     gray = cv2.cvtColor(hls_image, cv2.COLOR_RGB2GRAY)
 
@@ -188,8 +187,7 @@ def warp(img):
     return warped, src, dst, M, Minv
 
 
-# TODO: OUTPUT LESS
-
+# FIXME: OUTPUT LESS \u21A5
 
 def lanes_finding(image, margin=30):
     # fit_image = cv2.imread(r'.\output_images\perspective_trans.jpg')
@@ -266,12 +264,13 @@ def lanes_finding(image, margin=30):
     return out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit
 
 
-# TODO
+# FIXME OUTPUT LESS
 
 
-def curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx):
+def curvature(lefty, leftx, righty, rightx, ploty):
     ym_per_pix = 30 / 720  # meters per pixel in y dimension
     xm_per_pix = 3.7 / 700  # meters per pixel in x dimension
+    y_eval = np.max(ploty)
 
     # Fit new polynomials to x,y in world space
     left_fit_cr = np.polyfit(lefty * ym_per_pix, leftx * xm_per_pix, 2)
@@ -282,7 +281,8 @@ def curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx):
     return left_curverad, right_curverad
 
 
-def project_back(origin_image, lane_warped=pers_warped, Minv=Minv_w, left=left_fitx, right=right_fitx, y=ploty):
+# lane_warped=pers_warped, Minv=Minv_w, left=left_fitx, right=right_fitx, y=ploty
+def project_back(origin_image, lane_warped, Minv, left, right, y):
     warp_zero = np.zeros_like(lane_warped).astype(np.uint8)
     # color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
     color_warp = warp_zero
@@ -303,7 +303,7 @@ def project_back(origin_image, lane_warped=pers_warped, Minv=Minv_w, left=left_f
 
 def process_image(image):
 
-'''
+    '''
     undis_image = undistortion5and6(image)
     color_binary, combined_binary = hls_binary(hls_image)
     arped, src, dst, M, Minv = warp(img)
@@ -318,5 +318,4 @@ def process_image(image):
 
     image = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0] # pipeline_camera_cal
     camera_cal_dir = os.path.abspath(r'.\output_images\distortion-corrected.jpg')
-
-'''
+    '''
