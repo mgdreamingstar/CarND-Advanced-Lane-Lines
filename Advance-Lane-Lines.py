@@ -82,7 +82,7 @@ def undistortion5(img_path):
         img_size = (origin.shape[1], origin.shape[0])
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints_un, imgpoints_un, img_size, None, None)
         out_img = cv2.undistort(origin, mtx, dist, None, mtx)
-        return out_img
+        return out_img, mtx, dist
 
 
 def undistortion6(img_path):
@@ -111,10 +111,10 @@ def undistortion6(img_path):
 
 def undistortion5and6(image):
     try:
-        undis_image = undistortion5(image)
+        undist_image, mtx, dist = undistortion5(image)
     except:
-        undis_image = undistortion6(image)
-    return undis_image
+        undist_image, mtx, dist = undistortion6(image)
+    return undist_image, mtx, dist
 
 
 def hls_binary(hls_image):
@@ -302,9 +302,8 @@ def project_back(origin_image, lane_warped, Minv, left, right, y):
 
 
 def process_image(image):
-
     '''
-    undis_image = undistortion5and6(image)
+    undist_image, mtx, dist = undistortion5and6(image)
     color_binary, combined_binary = hls_binary(hls_image)
     arped, src, dst, M, Minv = warp(img)
     out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(image, margin=30)
@@ -319,3 +318,28 @@ def process_image(image):
     image = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0] # pipeline_camera_cal
     camera_cal_dir = os.path.abspath(r'.\output_images\distortion-corrected.jpg')
     '''
+    # undist_image, mtx, dist = undistortion5and6(image)  # mtx and dist not used.
+    color_binary, combined_binary = hls_binary(image)
+    warped, src, dst, M, Minv = warp(combined_binary)
+    out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(warped, margin=30)
+    left_curverad, right_curverad = curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx)
+    result = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
+    return result
+
+
+# %% test case
+# camera cal
+camera_cal_path = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
+undist_image, mtx, dist = undistortion5and6(camera_cal_path)
+image = cv2.imread(r'test_images\test1.jpg')
+image_undist = cv2.undistort(image, mtx, dist, None, mtx)
+plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+
+# hls binary
+color_binary, combined_binary = hls_binary(image_undist)
+plt.imshow(combined_binary, cmap='gray')
+
+#
+result = process_image(image)
+
+plt.imshow(result)
