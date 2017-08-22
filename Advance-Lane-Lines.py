@@ -191,7 +191,10 @@ def warp(img):
 
 def lanes_finding(image, margin=30):
     # fit_image = cv2.imread(r'.\output_images\perspective_trans.jpg')
-    fit_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    if image.ndim == 2:
+        fit_image = image
+    else:
+        fit_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     histogram = np.sum(fit_image, axis=0)
 
@@ -339,7 +342,13 @@ plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 color_binary, combined_binary = hls_binary(image_undist)
 plt.imshow(combined_binary, cmap='gray')
 
-#
-result = process_image(image)
+# warp image
+warped, src, dst, M, Minv = warp(combined_binary)
+plt.imshow(warped, cmap='gray')
 
+print(warped.shape)
+print(warped.ndim)
+# lane finding
+out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(warped, margin=30)
+plt.imshow(out_img,cmap='gray')
 plt.imshow(result)
