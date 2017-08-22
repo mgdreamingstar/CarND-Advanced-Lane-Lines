@@ -287,8 +287,8 @@ def curvature(lefty, leftx, righty, rightx, ploty):
 # lane_warped=pers_warped, Minv=Minv_w, left=left_fitx, right=right_fitx, y=ploty
 def project_back(origin_image, lane_warped, Minv, left, right, y):
     warp_zero = np.zeros_like(lane_warped).astype(np.uint8)
-    # color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
-    color_warp = warp_zero
+    color_warp = np.dstack((warp_zero, warp_zero, warp_zero))
+    # color_warp = warp_zero
     # Recast the x and y points into usable format for cv2.fillPoly()
     pts_left = np.array([np.transpose(np.vstack([left, y]))])
     pts_right = np.array([np.flipud(np.transpose(np.vstack([right, y])))])
@@ -329,7 +329,6 @@ def process_image(image):
     result = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
     return result
 
-
 # %% test case
 # camera cal
 camera_cal_path = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
@@ -348,7 +347,17 @@ plt.imshow(warped, cmap='gray')
 
 print(warped.shape)
 print(warped.ndim)
+
 # lane finding
 out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(warped, margin=30)
 plt.imshow(out_img,cmap='gray')
-plt.imshow(result)
+
+# curvature
+
+left_curverad, right_curverad = curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx, ploty=ploty)
+print('left curvature is {} m, right curvature is {} m'.format(left_curverad,right_curverad))
+
+# project back
+
+abc = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
+plt.imshow(cv2.cvtColor(abc,cv2.COLOR_BGR2RGB))
