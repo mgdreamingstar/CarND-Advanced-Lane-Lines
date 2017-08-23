@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from matplotlib.lines import Line2D
 import pickle
+from moviepy.editor import VideoFileClip
+from IPython.display import HTML
 
 # Constants
 
@@ -324,10 +326,12 @@ def process_image(image):
     # undist_image, mtx, dist = undistortion5and6(image)  # mtx and dist not used.
     color_binary, combined_binary = hls_binary(image)
     warped, src, dst, M, Minv = warp(combined_binary)
-    out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(warped, margin=30)
+    out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(
+        warped, margin=30)
     left_curverad, right_curverad = curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx)
     result = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
     return result
+
 
 # %% test case
 # camera cal
@@ -349,15 +353,19 @@ print(warped.shape)
 print(warped.ndim)
 
 # lane finding
-out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(warped, margin=30)
-plt.imshow(out_img,cmap='gray')
+out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(
+    warped, margin=30)
+plt.imshow(out_img, cmap='gray')
 
 # curvature
 
 left_curverad, right_curverad = curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx, ploty=ploty)
-print('left curvature is {} m, right curvature is {} m'.format(left_curverad,right_curverad))
+print('left curvature is {} m, right curvature is {} m'.format(left_curverad, right_curverad))
 
 # project back
 
 abc = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
-plt.imshow(cv2.cvtColor(abc,cv2.COLOR_BGR2RGB))
+plt.imshow(cv2.cvtColor(abc, cv2.COLOR_BGR2RGB))
+
+clip1 = VideoFileClip(r'd:\Github\CarND-Advanced-Lane-Lines\Videos\project_video.mp4') 
+white_clip = clip1.fl_image(project_back) #NOTE: this function expects color images!!
