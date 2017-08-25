@@ -11,8 +11,8 @@ from IPython.display import HTML
 
 # Constants
 
-pipeline_camera_cal = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
-pipeline_thresh_combine = cv2.imread(r'test_images\test1.jpg')
+pipeline_camera_cal = glob.glob(R'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
+pipeline_thresh_combine = cv2.imread(R'test_images\test1.jpg')
 
 
 # Helper Functions
@@ -189,10 +189,8 @@ def warp(img):
     return warped, src, dst, M, Minv
 
 
-# FIXME: OUTPUT LESS \u21A5
-
 def lanes_finding(image, margin=30):
-    # fit_image = cv2.imread(r'.\output_images\perspective_trans.jpg')
+    # fit_image = cv2.imread(R'.\output_images\perspective_trans.jpg')
     if image.ndim == 2:
         fit_image = image
     else:
@@ -200,7 +198,7 @@ def lanes_finding(image, margin=30):
 
     histogram = np.sum(fit_image, axis=0)
 
-    # fit_image = cv2.imread(r'.\output_images\perspective_trans.jpg') # 读入更改视角的图片
+    # fit_image = cv2.imread(R'.\output_images\perspective_trans.jpg') # 读入更改视角的图片
     # fit_image = cv2.cvtColor(fit_image, cv2.COLOR_BGR2GRAY) # 改为单通道
     out_img = np.dstack((fit_image, fit_image, fit_image)) * 255
 
@@ -269,9 +267,6 @@ def lanes_finding(image, margin=30):
     return out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit
 
 
-# FIXME OUTPUT LESS
-
-
 def curvature(lefty, leftx, righty, rightx, ploty):
     ym_per_pix = 30 / 720  # meters per pixel in y dimension
     xm_per_pix = 3.7 / 700  # meters per pixel in x dimension
@@ -317,11 +312,11 @@ def process_image(image):
 
     image flow:
 
-    pipeline_camera_cal = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
-    pipeline_thresh_combine = cv2.imread(r'test_images\test1.jpg')
+    pipeline_camera_cal = glob.glob(R'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
+    pipeline_thresh_combine = cv2.imread(R'test_images\test1.jpg')
 
-    image = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0] # pipeline_camera_cal
-    camera_cal_dir = os.path.abspath(r'.\output_images\distortion-corrected.jpg')
+    image = glob.glob(R'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0] # pipeline_camera_cal
+    camera_cal_dir = os.path.abspath(R'.\output_images\distortion-corrected.jpg')
     '''
     # undist_image, mtx, dist = undistortion5and6(image)  # mtx and dist not used.
     color_binary, combined_binary = hls_binary(image)
@@ -335,12 +330,11 @@ def process_image(image):
 
 # %% test case
 # camera cal
-import os
 print(os.getcwd())
 os.chdir('D:\Github\CarND-Advanced-Lane-Lines')
-camera_cal_path = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
+camera_cal_path = glob.glob(R'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
 undist_image, mtx, dist = undistortion5and6(camera_cal_path)
-image = cv2.imread(r'test_images\test1.jpg')
+image = cv2.imread(R'test_images\test1.jpg')
 image_undist = cv2.undistort(image, mtx, dist, None, mtx)
 plt.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
@@ -370,8 +364,8 @@ print('left curvature is {} m, right curvature is {} m'.format(left_curverad, ri
 abc = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
 plt.imshow(cv2.cvtColor(abc, cv2.COLOR_BGR2RGB))
 
-white_output = r'.\output_images\project_video.mp4'
-clip1 = VideoFileClip(r'.\Videos\project_video.mp4')
-# white_output = r'.\output_images\challenge_video.mp4'
-white_clip = clip1.fl_image(process_image)  #NOTE: this function expects color images!!
+white_output = R'.\output_images\project_video.mp4'
+clip1 = VideoFileClip(R'.\Videos\project_video.mp4')
+# white_output = R'.\output_images\challenge_video.mp4'
+white_clip = clip1.fl_image(process_image)  # NOTE: this function expects color images!!
 %time white_clip.write_videofile(white_output, audio=False)

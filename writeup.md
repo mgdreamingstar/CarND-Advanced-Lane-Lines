@@ -26,7 +26,7 @@ The goals / steps of this project are the following:
 [image7]: ./output_images/project_back.jpg "Project Back"
 [video1]: ./project_video.mp4 "Video"
 
-## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
+## [Rubric Points](https://review.udacity.com/#!/rubrics/571/view)
 
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.
 
@@ -128,3 +128,24 @@ Here's a [link to my video result](./project_video.mp4)
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.
+
+##### Issues:
+
+Firstly, the pictures provided for camera calibration don't have save rows, but they have either 5 or 6 rows. So I use a `try...except...` method to address this issue.
+
+Secondly, when detecting lanes, the width of boxes is quite importent. As it will take in outlier pixels, so I set a relatively small width to address this issue.
+
+##### Where will my pipeline likely fail?
+
+The right white lane is disconnected, so the detection sometimes is uncertain. After testing on the challenge_video.mp4, I find on these situations the pipeline may fail:
+
+1. There is another line on road which isn't lane line.
+2. There is shadow on road.
+3. The color of lanes are fading.
+
+##### What could I do to make it more robust?
+
+I think to
+1. have several different color space threshold to detect the lanes will make it more robust.
+2. take the direction of lanes into account will make it more robust.
+3. look-ahead when the detection is uncertain and smoothing on the last n findings will make it more robust.
