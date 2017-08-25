@@ -328,13 +328,16 @@ def process_image(image):
     warped, src, dst, M, Minv = warp(combined_binary)
     out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit = lanes_finding(
         warped, margin=30)
-    left_curverad, right_curverad = curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx)
+    left_curverad, right_curverad = curvature(lefty=lefty, leftx=leftx, righty=righty, rightx=rightx, ploty=ploty)
     result = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
     return result
 
 
 # %% test case
 # camera cal
+import os
+print(os.getcwd())
+os.chdir('D:\Github\CarND-Advanced-Lane-Lines')
 camera_cal_path = glob.glob(r'D:\Github\CarND-Advanced-Lane-Lines\camera_cal\*.jpg')[0]
 undist_image, mtx, dist = undistortion5and6(camera_cal_path)
 image = cv2.imread(r'test_images\test1.jpg')
@@ -367,5 +370,8 @@ print('left curvature is {} m, right curvature is {} m'.format(left_curverad, ri
 abc = project_back(image, lane_warped=warped, Minv=Minv, left=left_fitx, right=right_fitx, y=ploty)
 plt.imshow(cv2.cvtColor(abc, cv2.COLOR_BGR2RGB))
 
-clip1 = VideoFileClip(r'd:\Github\CarND-Advanced-Lane-Lines\Videos\project_video.mp4') 
-white_clip = clip1.fl_image(project_back) #NOTE: this function expects color images!!
+white_output = r'.\output_images\project_video.mp4'
+clip1 = VideoFileClip(r'.\Videos\project_video.mp4')
+# white_output = r'.\output_images\challenge_video.mp4'
+white_clip = clip1.fl_image(process_image)  #NOTE: this function expects color images!!
+%time white_clip.write_videofile(white_output, audio=False)
