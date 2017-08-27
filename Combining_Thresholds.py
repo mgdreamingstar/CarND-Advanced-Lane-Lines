@@ -67,7 +67,26 @@ def dir_threshold(image, sobel_kernel=3, thresh=(0, np.pi/2)):
 
     return binary
 
-# Choose a Sobel kernel size
+
+def b_threshold(im, thresh=(30,255)):
+    Lab = cv2.cvtColor(im,cv2.COLOR_RGB2Lab)
+    b_channel = Lab[:,:,2]
+    b_binary = np.zeros_like(b_channel)
+    b_binary[(b_channel >= thresh[0]) & (b_channel <= thresh[1])] = 1
+    #  b_binary = np.dstack((np.zeros_like(b_binary),np.zeros_like(b_binary),b_binary))
+    return b_binary
+
+
+
+#%% b_channel
+import glob
+print(glob.glob('*'))
+b_image = mpimg.imread('signs_vehicles_xygrad.jpg')
+plt.imshow(cv2.cvtColor(b_image,cv2.COLOR_BGR2Lab),cmap='gray')
+plt.imshow(b_threshold(b_image),cmap='gray') # There is no yellow on image
+
+
+# %% Choose a Sobel kernel size
 ksize = 3 # Choose a larger odd number to smooth gradient measurements
 
 # Apply each of the thresholding functions
