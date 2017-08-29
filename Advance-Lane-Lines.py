@@ -189,12 +189,12 @@ def warp(img):
     return warped, src, dst, M, Minv
 
 
-def lanes_finding(image, margin=30):
+def  lanes_finding(image, margin=30):
     # fit_image = cv2.imread(R'.\output_images\perspective_trans.jpg')
-    if image.ndim == 2:
+    if image.ndim == 2:  # 本身为灰度图像
         fit_image = image
     else:
-        fit_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        fit_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # 转换为灰度图像
 
     histogram = np.sum(fit_image, axis=0)
 
@@ -217,12 +217,13 @@ def lanes_finding(image, margin=30):
     rightx_current = rightx_base
 
     # margin = 100
-    minpix = 50
+    minpix = 40
 
     left_lane_inds = []  # 逻辑值数组
     right_lane_inds = []
 
     for window in range(nwindows):  # window = 0 - 8
+        # 定义 window 形状
         win_y_low = fit_image.shape[0] - (window + 1) * window_height
         win_y_high = fit_image.shape[0] - window * window_height
         win_xleft_low = leftx_current - margin
@@ -230,8 +231,8 @@ def lanes_finding(image, margin=30):
         win_xright_low = rightx_current - margin
         win_xright_high = rightx_current + margin
         # Draw the windows on the visualization image
-        cv2.rectangle(out_img, (win_xleft_low, win_y_low), (win_xleft_high, win_y_high), (0, 255, 0), 2)  # 左边的方框
-        cv2.rectangle(out_img, (win_xright_low, win_y_low), (win_xright_high, win_y_high), (0, 255, 0), 2)  # 右边的方框
+        cv2.rectangle(out_img, (win_xleft_low, win_y_low), (win_xleft_high, win_y_high), (0, 255, 0), 4)  # 左边的方框
+        cv2.rectangle(out_img, (win_xright_low, win_y_low), (win_xright_high, win_y_high), (0, 255, 0), 4)  # 右边的方框
         # Identify the nonzero pixels in x and y within the window
         good_left_inds = ((nonzeroy >= win_y_low) & (nonzeroy < win_y_high) &
                           (nonzerox >= win_xleft_low) & (nonzerox < win_xleft_high)).nonzero()[0]  # 左边方框中点的个数
@@ -265,6 +266,7 @@ def lanes_finding(image, margin=30):
     out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]  # 左边在方框中的点涂红
     out_img[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] = [0, 0, 255]  # 蓝
     return out_img, left_lane_inds, right_lane_inds, nonzerox, nonzeroy, midpoint, leftx_base, rightx_base, leftx, rightx, lefty, righty, left_fitx, right_fitx, ploty, left_fit, right_fit
+
 
 
 def curvature(lefty, leftx, righty, rightx, ploty):
