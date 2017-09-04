@@ -162,7 +162,7 @@ class Line():
         # was the line detected in the last iteration?
         self.detected = False
         # x values of the last n fits of the line
-        self.recent_xfitted = []
+        self.recent_xfitted = np.array([])
         #average x values of the fitted line over the last n iterations
         self.bestx = None
         #polynomial coefficients averaged over the last n iterations
@@ -265,7 +265,7 @@ def new_lanes_finding(image, margin=80):
     right_lane = Line()
 
     # left_lane.detected = True
-    left_lane.recent_xfitted.append(np.array(left_fitx)) # list of points on fitted line
+    left_lane.recent_xfitted = np.hstack((left_lane.recent_xfitted,np.array(left_fitx))) # list of points on fitted line
     left_lane.current_fit.append(left_fit) # np.array of fitted coefficients
     left_lane.bias = (midpoint - leftx_base) * 3.7/700
     left_lane.line_base_pos = leftx_base
@@ -274,7 +274,7 @@ def new_lanes_finding(image, margin=80):
     left_lane.ally = lefty
 
     # right_lane.detected = True
-    right_lane.recent_xfitted.append(np.array(right_fitx))
+    right_lane.recent_xfitted = np.hstack((right_lane.recent_xfitted,np.array(right_fitx)))
     right_lane.current_fit.append(right_fit)
     right_lane.bias = (midpoint - rightx_base) * 3.7/700
     right_lane.line_base_pos = rightx_base
@@ -306,8 +306,15 @@ out_img, left_lane, right_lane = new_lanes_finding(combined_binary, margin=80)
 # image_frame = clip.get_frame(24)
 # cv2.imwrite('24th_second.png',image_frame)
 image_frame = cv2.imread('24th_second.png')
+plt.imshow(image_frame)
 warped, src, dst, M, Minv = warp(image_frame)
+plt.imshow(warped)
 color_binary, combined_binary = LuvLab_binary(warped)
+plt.imshow(combined_binary)
+
+Luv = cv2.cvtColor(image_frame, cv2.COLOR_RGB2Luv)
+Lab = cv2.cvtColor(image_frame, cv2.COLOR_BGR2Lab)
+plt.imshow(Luv[:,:,2])
 out_img, left_lane, right_lane = new_lanes_finding(combined_binary, margin=80)
 # Plotting thresholded images
 f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
@@ -329,3 +336,24 @@ b_binary = np.zeros_like(b_channel)
 b_binary[(b_channel > thresh[0]) & (b_channel <= thresh[1])] = 1
 ax2.imshow(b_binary,cmap='gray')
 ax2.set_title('b_channel thresholding')
+left_lane.recent_xfitted.shape
+left_lane.recent_xfitted = np.vstack((left_lane.recent_xfitted,left_lane.recent_xfitted))
+left_lane.recent_xfitted.shape
+np.sum(left_lane.recent_xfitted,axis=0).shape
+a = np.array(np.ones((2,2)))
+b = np.vstack((a,a,a,a,a))
+b[:,1].shape
+a.shape
+b[-3:-1,:]
+left_lane.recent_xfitted[-4:-1,:].shape
+np.sum(left_lane.recent_xfitted[-3:-1,:],axis=0).shape
+
+
+#%% global variable
+z = 0
+def abc(k):
+    global z
+    z = 1
+    return z
+print(z)
+abc(2)
