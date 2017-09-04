@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+from moviepy.editor import VideoFileClip
 
 def warp(img):
     img_size = (img.shape[1], img.shape[0])
@@ -299,3 +300,12 @@ plt.plot(right_fitx, ploty, color='yellow')
 
 # %% new_lanes_finding
 out_img, left_lane, right_lane = new_lanes_finding(combined_binary, margin=80)
+
+# 24th second debug on new_lanes_finding
+clip = VideoFileClip(R'.\Videos\project_video.mp4')
+image_frame = clip.get_frame(24)
+# cv2.imwrite('24th_second.png',image_frame)
+warped, src, dst, M, Minv = warp(image_frame)
+color_binary, combined_binary = LuvLab_binary(warped)
+out_img, left_lane, right_lane = new_lanes_finding(combined_binary, margin=80)
+plt.imshow(warped)
