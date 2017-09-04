@@ -302,10 +302,30 @@ plt.plot(right_fitx, ploty, color='yellow')
 out_img, left_lane, right_lane = new_lanes_finding(combined_binary, margin=80)
 
 # 24th second debug on new_lanes_finding
-clip = VideoFileClip(R'.\Videos\project_video.mp4')
-image_frame = clip.get_frame(24)
+# clip = VideoFileClip(R'.\Videos\project_video.mp4')
+# image_frame = clip.get_frame(24)
 # cv2.imwrite('24th_second.png',image_frame)
+image_frame = cv2.imread('24th_second.png')
 warped, src, dst, M, Minv = warp(image_frame)
 color_binary, combined_binary = LuvLab_binary(warped)
 out_img, left_lane, right_lane = new_lanes_finding(combined_binary, margin=80)
-plt.imshow(warped)
+# Plotting thresholded images
+f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+ax1.set_title('Stacked thresholds')
+color_binary = np.uint8(255 * color_binary)
+ax1.imshow(color_binary)
+
+ax2.set_title('Combined L&b channel and gradient thresholds')
+ax2.imshow(combined_binary, cmap='gray')
+combined_binary = np.uint8(255 * combined_binary)
+
+# %% yellow thresholds
+f, (ax1, ax2) = plt.subplots(1, 2, figsize=(10,5))
+b_channel = cv2.cvtColor(image_frame, cv2.COLOR_RGB2Lab)[:,:,2]
+ax1.imshow(b_channel,cmap='gray')
+ax1.set_title('b_channel')
+thresh = (170,255)
+b_binary = np.zeros_like(b_channel)
+b_binary[(b_channel > thresh[0]) & (b_channel <= thresh[1])] = 1
+ax2.imshow(b_binary,cmap='gray')
+ax2.set_title('b_channel thresholding')
